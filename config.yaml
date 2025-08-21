@@ -1,0 +1,64 @@
+
+api:
+  key: "sk-RJbbYKHDLQ0DaQwSiXsbpA"
+  base: "https://pd67dqn1bd.execute-api.eu-west-1.amazonaws.com/v1"
+
+models:
+  # available API
+  api_embedding_options:
+    text-embedding-3-small: 1536
+    text-embedding-3-large: 3072
+
+  # available Local Embedding Models (from Hugging Face)
+  local_embedding_options:
+    "sentence-transformers/paraphrase-multilingual-mpnet-base-v2": 768
+    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": 384
+
+  evaluation: "gpt-4.1" #gpt-4.1-nano, gpt-4.1-nano, gpt-4.1-mini, gpt-4.1
+
+
+# ======================================================================
+#                            experiment configuration
+# ======================================================================
+search:
+  # --- 1. Select Embedding Provider ---
+  # options: 'api' or 'local'
+  embedding_provider: "local"
+
+  # --- 2. Select Specific Embedding Model ---
+  # note: This model name must match the provider selected above.
+  embedding_model_in_use: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+
+  # --- 3. Select Search Backend ---
+  # 'faiss' (fast) or 'sklearn' (simple)
+  backend: "faiss"
+
+  # --- 4. Select Ranking Strategy ---
+  # 'cosine', 'euclidean', 'advanced_hybrid'
+  ranking_strategy: "advanced_hybrid"
+
+  # weights for the 'advanced_hybrid' strategy
+  hybrid_weights:
+    semantic_score: 0.6
+    keyword_score: 0.5
+
+settings:
+  # number of random queries for LLM-as-a-Judge evaluation
+  llm_judge_sample_size: 5
+
+  # number of queries for unsupervised metrics. -1 means all queries.
+  unsupervised_sample_size: -1
+
+
+  top_k: 5
+
+  # evaluation report mode: 'llm_only', 'unsupervised_only', 'full_report'
+  evaluation_mode: "full_report"
+
+paths:
+  items_data: "data/5k_items_curated.csv"
+  queries_data: "data/queries.csv"
+  output_dir: "embeddings"
+  processed_items: "embeddings/processed_items.csv"
+  item_embeddings: "embeddings/item_embeddings.npy"
+  query_embeddings: "embeddings/query_embeddings.npy"
